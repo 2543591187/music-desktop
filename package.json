@@ -1,7 +1,7 @@
 {
   "name": "music-hub-desktop",
   "productName": "音集 MusicHub",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "音乐集成桌面应用（Electron + iTunes Search API）",
   "main": "main.js",
   "scripts": {
@@ -29,6 +29,7 @@
     ],
     "win": {
       "icon": "icon.ico",
+      "artifactName": "MusicHub-Setup-${version}.exe",
       "target": [
         {
           "target": "nsis",
