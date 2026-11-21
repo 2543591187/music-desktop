@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  html, body { margin: 0; height: 100%; background: #0B0B12; color: #eee; font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; overflow: hidden; user-select: none; }
+  body { display: flex; align-items: center; gap: 10px; padding: 12px 14px; }
+  .cv { width: 64px; height: 64px; border-radius: 10px; background: #222; object-fit: cover; flex: none; }
+  .meta { flex: 1; min-width: 0; }
+  .t { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .a { font-size: 11px; color: #999; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 3px; }
+  .pbar { height: 4px; background: #2a2a38; border-radius: 2px; cursor: pointer; margin-top: 8px; }
+  .pbar:hover { background: #333344; }
+  .pbar .pf { height: 100%; width: 0; background: #7b6cff; border-radius: 2px; }
+  .ctrl { display: flex; gap: 6px; margin-top: 6px; }
+  button { width: 30px; height: 30px; border-radius: 8px; border: none; background: #1c1c26; color: #eee; font-size: 13px; cursor: pointer; }
+  button:hover { background: #2a2a38; }
+  #close { position: absolute; top: 6px; right: 8px; width: 24px; height: 24px; background: none; color: #888; font-size: 14px; }
+  #close:hover { color: #fff; }
+</style>
+</head>
+<body>
+  <img class="cv" id="cv" alt="">
+  <div class="meta">
+    <div class="t" id="t">未在播放</div>
+    <div class="a" id="a"></div>
+    <div class="pbar" id="pbar" title="点击定位"><div class="pf" id="pf"></div></div>
+    <div class="ctrl">
+      <button id="prev" title="上一首">⏮</button>
+      <button id="pp" title="播放/暂停">▶</button>
+      <button id="next" title="下一首">⏭</button>
+    </div>
+  </div>
+  <button id="close" title="关闭迷你窗">✕</button>
+<script>
+  const send = (c) => window.mini.cmd(c);
+  window.mini.onState((s) => {
+    document.getElementById('t').textContent = s.title || '未在播放';
+    document.getElementById('a').textContent = s.artist || '';
+    const cv = document.getElementById('cv');
+    cv.style.display = s.cover ? 'block' : 'none';
+    if (s.cover) cv.src = s.cover;
+    document.getElementById('pp').textContent = s.playing ? '⏸' : '▶';
+    // 进度条（2026-10-25）
+    const pf = document.getElementById('pf');
+    if (s.dur > 0) pf.style.width = Math.max(0, Math.min(100, (s.cur / s.dur) * 100)) + '%';
+  });
+  document.getElementById('pbar').onclick = (e) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    window.mini.cmd({ seek: (e.clientX - r.left) / r.width });
+  };
+  document.getElementById('prev').onclick = () => send('prev');
+  document.getElementById('pp').onclick = () => send('pp');
+  document.getElementById('next').onclick = () => send('next');
+  document.getElementById('close').onclick = () => send('close');
+</script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+{
+  "name": "music-hub-desktop",
+  "productName": "音集 MusicHub",
+  "version": "1.0.0",
+  "description": "音乐集成桌面应用（Electron + iTunes Search API）",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "lint": "eslint main.js preload.js mini-preload.js"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "eslint": "^10.15.0",
+    "globals": "^17.14.0"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}

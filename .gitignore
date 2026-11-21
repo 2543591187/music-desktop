@@ -1,0 +1,8 @@
+node_modules/
+*.bak_*
+test_*
+probe_*
+debug_tmp/
+*.log
+crash.log
+dist/
