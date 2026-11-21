@@ -30,7 +30,12 @@
     "win": {
       "icon": "icon.ico",
       "target": [
-        { "target": "nsis", "arch": ["x64"] }
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
       ]
     },
     "nsis": {
@@ -44,7 +49,8 @@
       {
         "provider": "github",
         "owner": "2543591187",
-        "repo": "music-desktop"
+        "repo": "music-desktop",
+        "token": "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"
       }
     ]
   },
