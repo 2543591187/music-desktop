@@ -328,7 +328,7 @@ async function initUpdater() {
 ipcMain.handle('update:check', async () => {
   if (!autoUpdater) return { state: 'dev', detail: '开发模式（未打包）：无更新渠道' };
   try {
-    const res = await autoUpdater.checkForUpdates();
+    await autoUpdater.checkForUpdates();
     return { state: 'checked', detail: '已检查最新 Release' };
   } catch (e) { return { state: 'error', detail: e.message }; }
 });
