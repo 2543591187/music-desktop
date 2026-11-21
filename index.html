@@ -3567,6 +3567,15 @@
         if (audio.paused) { loadAndPlay(t); } else { audio.play().catch(() => {}); }
       });
     }
+    // 自动更新状态提示（#12，2026-11-21）：有新版本/出错时 toast；checking/已是最新静默
+    if (isDesktop && window.desktop.onUpdateState) {
+      window.desktop.onUpdateState((state, detail) => {
+        if (state === 'available') toast('🔄 发现新版本 v' + detail + '，正在下载…');
+        else if (state === 'downloaded') toast('✅ 新版本 v' + detail + ' 已下载完成');
+        else if (state === 'error') toast('⚠️ 检查更新失败：' + detail, 'err');
+        else if (state === 'dev') toast(detail || '开发模式：无更新渠道');
+      });
+    }
   })();
 })();
 </script>

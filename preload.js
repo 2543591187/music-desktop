@@ -68,5 +68,9 @@ contextBridge.exposeInMainWorld('desktop', {
   disarmWake: () => ipcRenderer.send('wake:disarm'),
   onWake: (cb) => ipcRenderer.on('wake:fire', () => cb()),
   winShow: () => ipcRenderer.send('win:show'),
+  // 自动更新（#12，2026-11-21）
+  checkUpdate: () => ipcRenderer.invoke('update:check'),
+  updateInstall: () => ipcRenderer.send('update:install'),
+  onUpdateState: (cb) => ipcRenderer.on('update:state', (_e, d) => cb(d && d.state, d && d.detail)),
   isDesktop: true,
 });

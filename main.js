@@ -277,11 +277,73 @@ function registerGlobalHotkeys() {
   one('mini', 'CommandOrControl+Shift+M', () => { if (win && !win.isDestroyed()) win.webContents.send('mini:toggle'); });
 }
 
+/* ---- 自动更新（#12，2026-11-21）：electron-updater + GitHub Releases。
+   仅打包模式生效；dev（electron .）下跳过。启动 5s 后查一次；托盘「检查更新」手动再查。
+   有新版 → 自动下载 → 弹框询问「立即重启安装」。失败一律静默记日志，不影响主流程。 ---- */
+let autoUpdater = null;
+let updLastLogPct = -1;
+function sendUpd(state, detail) {
+  try { if (win && !win.isDestroyed()) win.webContents.send('update:state', { state: state, detail: detail || '' }); } catch {}
+}
+async function initUpdater() {
+  if (!app.isPackaged || autoUpdater) return;
+  try {
+    const { autoUpdater: au } = require('electron-updater');
+    autoUpdater = au;
+    autoUpdater.autoDownload = true;
+    autoUpdater.autoInstallOnAppQuit = false;
+    autoUpdater.on('checking-for-update', () => { try { mainLogLine('info', ['[update] checking']); } catch {} sendUpd('checking'); });
+    autoUpdater.on('update-available', (info) => { try { mainLogLine('info', ['[update] available', info && info.version]); } catch {} sendUpd('available', info && info.version); });
+    autoUpdater.on('update-not-available', (info) => { try { mainLogLine('info', ['[update] up-to-date', info && info.version]); } catch {} sendUpd('not-available', info && info.version); });
+    autoUpdater.on('download-progress', (p) => {
+      try {
+        const pct = p && p.percent ? Math.floor(p.percent / 10) * 10 : 0;
+        if (pct !== updLastLogPct) { updLastLogPct = pct; mainLogLine('info', ['[update] download', pct + '%']); }
+      } catch {}
+    });
+    autoUpdater.on('update-downloaded', (info) => {
+      try { mainLogLine('info', ['[update] downloaded', info && info.version]); } catch {}
+      sendUpd('downloaded', info && info.version);
+      // 询问是否立即重启安装
+      try {
+        if (win && !win.isDestroyed()) {
+          dialog.showMessageBox(win, {
+            type: 'info',
+            title: '音集 MusicHub',
+            message: '新版本 v' + ((info && info.version) || '') + ' 已下载完成。',
+            detail: '立即重启安装？（未保存的播放状态会保留在本地，重启后恢复）',
+            buttons: ['立即重启安装', '稍后'],
+            defaultId: 0,
+            cancelId: 1,
+          }).then((r) => {
+            if (r && r.response === 0) { try { autoUpdater.quitAndInstall(); } catch (e2) { try { mainLogLine('error', ['[update] install failed', e2.message]); } catch {} } }
+          }).catch(() => {});
+        }
+      } catch {}
+    });
+    autoUpdater.on('error', (e) => { try { mainLogLine('error', ['[update] error', e && e.message]); } catch {} sendUpd('error', e && e.message); });
+    try { await autoUpdater.checkForUpdates(); } catch (e) { try { mainLogLine('error', ['[update] check failed', e.message]); } catch {} }
+  } catch (e) { try { mainLogLine('error', ['[update] init failed', e.message]); } catch {} }
+}
+ipcMain.handle('update:check', async () => {
+  if (!autoUpdater) return { state: 'dev', detail: '开发模式（未打包）：无更新渠道' };
+  try {
+    const res = await autoUpdater.checkForUpdates();
+    return { state: 'checked', detail: '已检查最新 Release' };
+  } catch (e) { return { state: 'error', detail: e.message }; }
+});
+ipcMain.on('update:install', () => {
+  if (!autoUpdater) return;
+  try { autoUpdater.quitAndInstall(); } catch (e) { try { mainLogLine('error', ['[update] install failed', e.message]); } catch {} }
+});
+
 app.whenReady().then(async () => {
   nativeTheme.themeSource = 'dark';
   createWindow();
   createTray();
   registerGlobalHotkeys();
+  // 自动更新（#12）：启动 5s 后查一次最新 Release
+  setTimeout(() => { initUpdater(); }, 5000);
   // 持久分区里若已有登录 cookie（上次扫码），启动即恢复登录态并推送给 UI
   setTimeout(async () => {
     try {
@@ -340,6 +402,7 @@ function buildTrayMenu() {
     { label: '下一首', click: () => trayCtrl('next') },
     { type: 'separator' },
     { label: '显示窗口', click: () => { if (win && !win.isDestroyed()) { win.show(); win.focus(); } } },
+    { label: '检查更新', click: () => { if (autoUpdater) { try { autoUpdater.checkForUpdates().catch((e) => { try { mainLogLine('error', ['[update] manual check failed', e.message]); } catch {} }); } catch {} } else { sendUpd('dev', '开发模式（未打包）：无更新渠道'); } } },
     { label: '退出', click: () => app.quit() },
   ];
   try { tray.setMenu(Menu.buildFromTemplate(tpl)); } catch {}

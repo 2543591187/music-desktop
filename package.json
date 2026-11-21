@@ -6,14 +6,56 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "lint": "eslint main.js preload.js mini-preload.js"
+    "lint": "eslint main.js preload.js mini-preload.js",
+    "dist": "electron-builder --win nsis"
+  },
+  "build": {
+    "appId": "com.yinji.musichub",
+    "productName": "音集 MusicHub",
+    "directories": {
+      "output": "dist",
+      "buildResources": "."
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "mini-preload.js",
+      "index.html",
+      "mini.html",
+      "icon.ico",
+      "icon_256.png",
+      "tray-icon.png",
+      "package.json"
+    ],
+    "win": {
+      "icon": "icon.ico",
+      "target": [
+        { "target": "nsis", "arch": ["x64"] }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "perMachine": false,
+      "uninstallDisplayName": "音集 MusicHub"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "2543591187",
+        "repo": "music-desktop"
+      }
+    ]
   },
   "devDependencies": {
     "electron": "^33.0.0",
+    "electron-builder": "^26.18.0",
     "eslint": "^10.15.0",
     "globals": "^17.14.0"
   },
   "dependencies": {
+    "electron-updater": "^6.8.11",
     "ws": "^8.18.0"
   }
 }
