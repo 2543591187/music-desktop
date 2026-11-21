@@ -2399,16 +2399,16 @@
   function skipFailedTrack(reason) {
     const t = S.queue[S.currentIndex];
     if (!t) { stopAll(); return; }
-    const idx = S.currentIndex;
+    let idx = S.currentIndex;
     S.queue.splice(idx, 1);
     if (!S.queue.length) {
-      toast('已恢复上次播放：' + t.trackName + '' + reason + '，队列里没有下一首了');
+      toast('播放失败：' + t.trackName + '（' + reason + '），队列里没有下一首了', 'err');
       stopAll();
       return;
     }
-    if (idx >= S.queue.length) idx = 0;   // 删的是最后一首则回到第一�?
+    if (idx >= S.queue.length) idx = 0;   // 删的是最后一首则回到第一首
     S.currentIndex = idx;
-    toast('已恢复上次播放：' + t.trackName + '' + reason + '，已自动跳到下一首', 'err');
+    toast('播放失败：' + t.trackName + '（' + reason + '），已自动跳到下一首', 'err');
     loadAndPlay(S.queue[idx]);
     render();
   }
