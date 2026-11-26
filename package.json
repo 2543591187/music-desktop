@@ -1,7 +1,7 @@
 {
   "name": "music-hub-desktop",
   "productName": "音集 MusicHub",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "音乐集成桌面应用（Electron + iTunes Search API）",
   "main": "main.js",
   "scripts": {

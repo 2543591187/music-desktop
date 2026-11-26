@@ -33,7 +33,7 @@
   }
   button { font-family: inherit; }
 
-  /* ===== 鑷标鏍?===== */
+  /* ===== 自定义标题栏 ===== */
   .titlebar {
     height: 40px;
     display: flex; align-items: center;
@@ -60,10 +60,10 @@
   .tb-btn:hover { background: rgba(255,255,255,.07); color: var(--text); }
   .tb-btn.close:hover { background: #e81123; color: #fff; }
 
-  /* ===== 甯冨眬 ===== */
+  /* ===== 布局 ===== */
   .layout { flex: 1; display: flex; min-height: 0; }
 
-  /* 渚ц竟鏍?*/
+  /* 侧边栏 */
   .sidebar {
     width: 260px; flex-shrink: 0;
     display: flex; flex-direction: column; gap: 14px;
@@ -154,7 +154,7 @@
   .stats-stat .num { font-size: 24px; font-weight: 700; color: var(--text); }
   .stats-stat .label { font-size: 11px; color: var(--muted); margin-top: 4px; }
 
-  /* ===== 涓诲尯 ===== */
+  /* ===== 主区域 ===== */
   .main { flex: 1; display: flex; flex-direction: column; min-width: 0; min-height: 0; }
   .main-head {
     padding: 22px 28px 0;
@@ -173,7 +173,7 @@
   .content::-webkit-scrollbar-thumb { background: rgba(255,255,255,.14); border-radius: 5px; }
   .content::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.25); }
 
-  /* 列〃琛岋紙涓昏图） */
+  /* 列表行（主视图） */
   .list { display: flex; flex-direction: column; gap: 6px; }
   .row {
     display: grid;
@@ -185,14 +185,14 @@
     border: 1px solid transparent;
   }
   .row:hover { background: rgba(255,255,255,.055); }
-  /* 队列拖拽排序 + 批量下载选择（?2026-10-25（?*/
+  /* 队列拖拽排序 + 批量下载选择（2026-10-25）*/
   .row.drag-src { opacity: .35; }
   .row.drag-over { box-shadow: inset 0 2px 0 0 #FF5E8A; }
   .row.drag-over-b { box-shadow: inset 0 -2px 0 0 #FF5E8A; }
   .row.sel { background: rgba(255,94,138,.12); }
   .row-sel { width: 15px; height: 15px; accent-color: #FF5E8A; cursor: pointer; }
   .queue-tools { display: flex; gap: 8px; align-items: center; padding: 4px 2px 8px; flex-wrap: wrap; }
-  /* 鏈€杩戞悳绱'+ 鏈库筛'+ A-B 寰幆 + 批量下载㈡澘 + 迷你窗按紙2026-10-25（?*/
+  /* 最近搜索 + 本地库筛选 + A-B 循环 + 批量下载面板 + 迷你窗按钮（2026-10-25）*/
   .recent-chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 2px 10px 6px; align-items: center; }
   .recent-chips .chip { font-size: 11px; background: rgba(255,255,255,.07); border-radius: 9px; padding: 3px 9px; cursor: pointer; color: var(--muted); }
   .recent-chips .chip:hover { background: rgba(255,255,255,.13); color: var(--text); }
@@ -287,7 +287,7 @@
   .icon-btn:hover { color: var(--text); background: rgba(255,255,255,.08); }
   .icon-btn.faved { color: var(--accent); }
 
-  /* 头部栏（列〃琛ㄥご（?*/
+  /* 头部栏（列表表头）*/
   .list-head {
     display: grid;
     grid-template-columns: 34px 56px 1fr 1.1fr 90px 46px 112px;
@@ -316,7 +316,7 @@
   }
   .chip:hover { border-color: var(--border-hi); color: var(--text); background: var(--panel-2); }
 
-  /* ===== 鎾斁鏉?===== */
+  /* ===== 播放栏 ===== */
   .playerbar {
     height: 88px; flex-shrink: 0;
     display: grid; grid-template-columns: 1fr 1.6fr 1fr;
@@ -377,7 +377,7 @@
     background: #fff; box-shadow: 0 0 6px rgba(255,255,255,.5);
   }
 
-  /* 队列㈡澘（主区内切换视图（非抽屉—€旀闈㈡洿瀹斤級 */
+  /* 队列面板（主区内切换视图（非抽屉—桌面版更宽） */
   .section-tag {
     font-size: 11px; color: var(--muted); letter-spacing: 2px;
     margin: 2px 0 12px; text-transform: uppercase;
@@ -448,37 +448,98 @@
   .lyric-full {
     position: fixed; inset: 0; z-index: 200; display: none;
     flex-direction: column; user-select: none;
+  }
+  .lyric-full.show { display: flex; animation: lfIn .5s ease; }
+  @keyframes lfIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  .lf-bg {
+    position: absolute; inset: -16%; z-index: 0;
     background: radial-gradient(120% 120% at 50% 18%, #241626 0%, #0b0b12 55%, #050508 100%);
   }
-  .lyric-full.show { display: flex; }
+  .lf-bg.has-art {
+    background-image: var(--lf-art), radial-gradient(120% 120% at 50% 18%, #241626 0%, #0b0b12 55%, #050508 100%);
+    background-size: cover; background-position: center;
+    filter: blur(70px) saturate(1.35); opacity: .42; transform: scale(1.2);
+    animation: lfDrift 24s ease-in-out infinite alternate;
+  }
+  @keyframes lfDrift { from { transform: scale(1.2) translate(-1%, -.6%); } to { transform: scale(1.32) translate(1%, .8%); } }
+  .lf-veil {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: linear-gradient(180deg, rgba(5,5,10,.78) 0%, rgba(5,5,10,.4) 30%, rgba(5,5,10,.42) 66%, rgba(5,5,10,.9) 100%);
+  }
   .lyric-full-head {
-    flex: 0 0 auto; padding: 20px 24px 6px; text-align: center;
-    color: rgba(255,255,255,.5); font-size: 13px; letter-spacing: .5px;
+    position: relative; z-index: 3; flex: 0 0 auto;
+    display: flex; align-items: center; gap: 14px; padding: 20px 26px 4px;
   }
+  #lfCover {
+    width: 54px; height: 54px; border-radius: 50%; object-fit: cover; flex: none;
+    background: #1b1b24; box-shadow: 0 10px 30px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.06);
+  }
+  #lfCover.spinning { animation: spin 24s linear infinite; }
+  .lf-titles { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+  .lyric-full-head #lyricFullTitle { font-size: 16.5px; font-weight: 800; color: rgba(255,255,255,.95); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .lyric-full-head #lfArtist { font-size: 12.5px; color: rgba(255,255,255,.5); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .lyric-full-close {
-    position: absolute; top: 14px; right: 18px; cursor: pointer;
-    background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12);
-    color: rgba(255,255,255,.7); border-radius: 10px; padding: 7px 12px; font-size: 12.5px;
-    transition: all .2s;
+    margin-left: auto; flex: none; width: 38px; height: 38px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+    background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12);
+    color: rgba(255,255,255,.7); font-size: 15px; transition: all .2s;
   }
-  .lyric-full-close:hover { background: rgba(255,94,138,.18); color: #fff; }
+  .lyric-full-close:hover { background: rgba(255,94,138,.2); border-color: rgba(255,94,138,.45); color: #fff; }
+  #lfParticles { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
   .lyric-full-body {
-    flex: 1 1 auto; overflow-y: auto; padding: 20px 10vw 32vh;
-    display: flex; flex-direction: column;
+    position: relative; z-index: 3; flex: 1 1 auto; overflow-y: auto; text-align: center;
+    padding: 7vh 6vw 7vh; display: flex; flex-direction: column; scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(180deg, transparent 4%, #000 34%, #000 64%, transparent 96%);
+    mask-image: linear-gradient(180deg, transparent 4%, #000 34%, #000 64%, transparent 96%);
   }
-  .lyric-full-body::-webkit-scrollbar { width: 8px; }
-  .lyric-full-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 4px; }
-  .lyric-full-body .lyric-line { font-size: 22px; line-height: 1.9; color: rgba(255,255,255,.3); }
-  .lyric-full-body .lyric-line.seek:hover { color: rgba(255,255,255,.85); }
+  .lyric-full-body::-webkit-scrollbar { display: none; }
+  .lyric-full-body .lyric-line {
+    font-size: 19px; line-height: 1.8; color: rgba(255,255,255,.34); padding: 9px 6px;
+    transition: opacity .5s ease, color .5s ease, font-size .45s ease, text-shadow .45s ease;
+  }
+  .lyric-full-body .lyric-line.seek:hover { color: rgba(255,255,255,.7); }
   .lyric-full-body .lyric-line.cur {
-    color: #fff; font-weight: 800; font-size: 30px; transform: none;
-    text-shadow: 0 0 28px rgba(255,94,138,.65);
+    color: #fff; font-weight: 800; font-size: 31px; line-height: 1.45; opacity: 1 !important;
+    text-shadow: 0 0 32px rgba(255,94,138,.5), 0 2px 14px rgba(0,0,0,.5);
   }
-  .lyric-full-body .lyric-trans { font-size: 14px; margin-top: 4px; }
-  .lyric-full-empty { text-align: center; color: var(--muted); font-size: 16px; margin: auto; }
+  .lyric-full-body .lyric-trans { font-size: 13px; color: rgba(255,255,255,.38); margin-top: 5px; }
+  .lyric-full-body .lyric-line.cur .lyric-trans { color: rgba(255,255,255,.62); font-size: 14.5px; }
+  .lyric-full-body .lyric-meta { color: rgba(255,255,255,.28); font-size: 13px; }
+  .lyric-full-empty { margin: auto; text-align: center; color: var(--muted); font-size: 15px; line-height: 1.9; }
+  .lyric-full-empty .big { font-size: 42px; opacity: .3; display: block; margin-bottom: 8px; }
+  .lf-foot { position: relative; z-index: 4; flex: 0 0 auto; padding: 4px 26px 18px; }
+  .lf-prog { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 11.5px; color: rgba(255,255,255,.45); font-variant-numeric: tabular-nums; }
+  .lf-bar { flex: 1; height: 5px; border-radius: 99px; background: rgba(255,255,255,.13); overflow: hidden; position: relative; }
+  #lfFill { position: absolute; left: 0; top: 0; height: 100%; width: 0%; border-radius: 99px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
+  .lf-ctrls { display: flex; justify-content: center; align-items: center; gap: 24px; }
+  .lf-btn {
+    width: 38px; height: 38px; border-radius: 50%; cursor: pointer;
+    background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1);
+    color: rgba(255,255,255,.85); display: inline-flex; align-items: center; justify-content: center; transition: all .2s;
+  }
+  .lf-btn:hover { background: rgba(255,255,255,.15); color: #fff; }
+  .lf-play { width: 50px; height: 50px; border: none; color: #fff; background: linear-gradient(135deg, var(--accent), var(--accent-2)); box-shadow: 0 6px 22px rgba(255,94,138,.4); }
+  .lf-play:hover { transform: scale(1.07); }
+  .lf-play .ic-pause { display: block; }
+  .lf-play .ic-play { display: none; }
+  .lf-play.paused .ic-pause { display: none; }
+  .lf-play.paused .ic-play { display: block; }
 
-  /* 瀵煎叆寮圭獥 */
-  /* 鎵登录（氬眳涓簩缁寸爜妯℃€?*/
+  /* 窄窗口时全屏歌词收紧（与安卓版同规则） */
+  @media (max-width: 720px) {
+    .lyric-full-head { padding: 12px 16px 2px; gap: 10px; }
+    #lfCover { width: 44px; height: 44px; }
+    .lyric-full-head #lyricFullTitle { font-size: 14px; }
+    .lyric-full-close { width: 34px; height: 34px; }
+    .lyric-full-body { padding: 5vh 18px 5vh; }
+    .lyric-full-body .lyric-line { font-size: 15.5px; line-height: 1.7; }
+    .lyric-full-body .lyric-line.cur { font-size: 24px; }
+    .lf-foot { padding: 2px 16px 14px; }
+    .lf-ctrls { gap: 20px; }
+  }
+
+  /* 导入弹窗 */
+  /* 扫码登录（居中二维码模态）*/
   .qr-mask {
     position: fixed; inset: 0; z-index: 95; display: none;
     background: rgba(5,5,10,.66); backdrop-filter: blur(6px);
@@ -547,7 +608,7 @@
   }
   .more-btn:hover { color: var(--text); background: var(--panel-2); }
   .pl-import-btn { margin-top: 4px; }
-  /* ---- 登录同 ---- */
+  /* ---- 登录同步 ---- */
   .auth-box { margin: 10px 0 14px; }
   .auth-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
   .auth-badge { font-size: 13px; color: var(--muted); }
@@ -575,12 +636,12 @@
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .pl-count { font-size: 11px; color: var(--muted); padding: 0 10px 8px; }
   .pl-load { color: var(--accent); }
-  /* toast 提ず（不阻渲染級 */
+  /* toast 提示（不阻塞渲染） */
   #toastWrap { position: fixed; top: 54px; right: 18px; z-index: 70; display: flex; flex-direction: column; gap: 8px; max-width: 400px; }
   .toast { padding: 10px 14px; border-radius: 10px; font-size: 13px; line-height: 1.5; box-shadow: 0 6px 18px rgba(0,0,0,.45); animation: toastIn .25s ease; border: 1px solid var(--border); background: var(--bg-2); color: var(--text); }
   .toast.err { background: #3a1520; border-color: #5a2333; color: #ffb4c4; }
   @keyframes toastIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-  /* 搜索ㄦ灦灞?*/
+  /* 搜索骨架屏 */
   .row.skel { pointer-events: none; cursor: default; }
   .skel-rect, .skel-line { border-radius: 7px; background: linear-gradient(100deg, #16171f 30%, #20222d 50%, #16171f 70%); background-size: 200% 100%; animation: skelSh 1.2s infinite linear; }
   .skel-rect { width: 52px; height: 52px; border-radius: 8px; }
@@ -589,7 +650,7 @@
   .skel-line.s3 { width: 45%; }
   @keyframes skelSh { to { background-position: -200% 0; } }
 
-  /* 滚动倒时数字（2026-11-15（?*/
+  /* 滚动倒计时数字（2026-11-15） */
   .roll-wrap {
     display: inline-flex; align-items: center; gap: 2px;
     font-size: 48px; font-weight: 700; color: #ff5e8a; margin: 12px 0;
@@ -617,7 +678,7 @@
 </head>
 <body>
 
-  <!-- 标鏍?-->
+  <!-- 标题栏 -->
   <div class="titlebar">
     <div class="tb-logo"><span class="dot">♪</span>音集 MusicHub</div>
     <div class="tb-title">音乐集成 · 整首播放</div>
@@ -630,7 +691,7 @@
   </div>
 
   <div class="layout">
-    <!-- 渚ц竟鏍?-->
+    <!-- 侧边栏 -->
     <aside class="sidebar">
       <div class="side-search">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
@@ -778,11 +839,28 @@
   <!-- 歌词面板 -->
   <div class="lyric-panel" id="lyricPanel"></div>
 
-  <!-- 全屏歌词（2026-11-21） -->
+  <!-- 全屏歌词（2026-11-21；2026-11-23 沉浸式封面背景版） -->
   <div class="lyric-full" id="lyricFull">
-    <div class="lyric-full-head"><span id="lyricFullTitle"></span></div>
-    <button class="lyric-full-close" id="lyricFullClose">✕ 退出（Esc）</button>
+    <div class="lf-bg" id="lfBg"></div>
+    <div class="lf-veil"></div>
+    <canvas id="lfParticles"></canvas>
+    <div class="lyric-full-head">
+      <img id="lfCover" alt="封面">
+      <div class="lf-titles"><span id="lyricFullTitle"></span><span id="lfArtist"></span></div>
+      <button class="lyric-full-close" id="lyricFullClose" title="退出全屏歌词（Esc）">✕</button>
+    </div>
     <div class="lyric-full-body" id="lyricFullBody"></div>
+    <div class="lf-foot">
+      <div class="lf-prog"><span id="lfCur">0:00</span><div class="lf-bar"><i id="lfFill"></i></div><span id="lfTotal">0:00</span></div>
+      <div class="lf-ctrls">
+        <button class="lf-btn" id="lfPrev" title="上一首"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg></button>
+        <button class="lf-btn lf-play" id="lfPlay" title="播放 / 暂停">
+          <svg class="ic-play" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <svg class="ic-pause" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
+        </button>
+        <button class="lf-btn" id="lfNext" title="下一首"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg></button>
+      </div>
+    </div>
   </div>
 
   <!-- 扫码登录：居中二维码模态（标题随来源切换：网易云 / QQ 音乐） -->
@@ -799,7 +877,7 @@
     </div>
   </div>
 
-  <!-- 姝屽崟瀵煎叆寮圭獥 -->
+  <!-- 歌单导入弹窗 -->
   <div class="modal-mask" id="importModal">
     <div class="modal">
       <h3>📋 导入网易云歌单</h3>
@@ -2395,7 +2473,16 @@
   /* ---------- 播放 ---------- */
   window.__loadAndPlay = async (t) => loadAndPlay(t);   // 调试钩子（E2E 验证用）
   window.__resolvePlayUrl = async (t) => resolvePlayUrl(t);   // 调试钩子
-  window.__skipTest = { S, skipFailedTrack };   // 调试钩子（自动跳?E2E 验证用）
+  window.__skipTest = { S, skipFailedTrack };   // 调试钩子（自动跳过，E2E 验证用）
+  window.__e2eSetLib = async (dir) => {   // 调试钩子（E2E 验证用）：把指定目录设为本地库
+    if (!window.desktop || !window.desktop.rescanFolder) throw new Error('需要桌面环境');
+    const res = await window.desktop.rescanFolder(dir);
+    if (!res) throw new Error('扫描失败: ' + dir);
+    S.libDir = res.dir;
+    S.library = res.tracks;
+    const badge = $('#libBadge'); if (badge) badge.textContent = res.tracks.length;
+    return res.tracks.length;
+  };
   function playIndex(idx, arr) {
     const t = arr[idx];
     let qi = S.queue.findIndex(q => tid(q) === tid(t));
@@ -3005,10 +3092,10 @@
     if (!text) return [];
     const out = [];
     for (const raw of text.split(/\r?\n/)) {
-      const m = raw.match(/^\[(\d{2}):(\d{2})[.:](\d{2,3})\](.*)$/);
+      const m = raw.match(/^\[(\d{1,2}):(\d{1,2})[.:](\d{1,3})\](.*)$/);
       if (!m) { if (raw.trim()) out.push({ time: -1, text: raw.trim() }); continue; }
-      // [mm:ss.xx] -> seconds (xx is hundredths)
-      const frac = parseInt(m[3], 10) / (m[3].length === 3 ? 1000 : 100);
+      // [mm:ss.x|xx|xxx] -> seconds（小数位数不定，按长度换算）
+      const frac = parseInt(m[3], 10) / Math.pow(10, m[3].length);
       const timeSec = (+m[1]) * 60 + (+m[2]) + frac;
       out.push({ time: timeSec, text: m[4].trim() });
     }
@@ -3171,9 +3258,18 @@
   function renderLyricFull() {
     if (!lyricFullOn) return;
     const t = S.queue[S.currentIndex];
-    lyricFullTitle.textContent = t ? (t.trackName + (t.artistName ? ' · ' + t.artistName : '')) : '';
+    lyricFullTitle.textContent = t ? (t.trackName || '') : '';
+    $('#lfArtist').textContent = t && t.artistName ? t.artistName : '';
+    // 沉浸式背景：模糊封面 + 缓慢漂移（2026-11-23）
+    const covFull = t ? (t.artworkUrl100 ? art(t) : coverOf(t).replace('100x100', '600x600')) : '';
+    if (covFull) {
+      $('#lfCover').src = covFull; $('#lfCover').style.display = 'block';
+      $('#lfBg').classList.add('has-art'); $('#lfBg').style.setProperty('--lf-art', `url("${covFull}")`);
+    } else {
+      $('#lfCover').style.display = 'none'; $('#lfBg').classList.remove('has-art');
+    }
     if (!lyricLines.length) {
-      lyricFullBody.innerHTML = '<div class="lyric-full-empty">这首歌暂无歌词</div>';
+      lyricFullBody.innerHTML = '<div class="lyric-full-empty"><span class="big">🖤</span>这首歌暂无歌词<br><small style="opacity:.6">可退出全屏继续收听，或搜索现场版歌词</small></div>';
       return;
     }
     const tmap = {};   // 翻译对齐（同小面板逻辑）
@@ -3201,21 +3297,30 @@
     }
     if (idx < 0 || idx === lastLyricFullIdx) return;
     lastLyricFullIdx = idx;
-    lyricFullBody.querySelectorAll('.lyric-line').forEach(el => el.classList.remove('cur'));
+    lyricFullBody.querySelectorAll('.lyric-line').forEach(el => {
+      el.classList.remove('cur');
+      const d = Math.abs(parseInt(el.dataset.i, 10) - idx);
+      if (d > 0) el.style.opacity = String(Math.max(0.12, 0.45 - (d - 1) * 0.1));
+    });
     const el = lyricFullBody.querySelector(`.lyric-line[data-i="${idx}"]`);
-    if (el) { el.classList.add('cur'); el.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
+    if (el) { el.classList.add('cur'); el.style.opacity = '1'; el.scrollIntoView({ block: 'center', behavior: 'smooth' }); lfSetLine(el); }   // 粒子从该行发出（2026-11-24）
   }
 
   function openLyricFull() {
     lyricFullOn = true;
     lyricFullEl.classList.add('show');
     $('#lyricFullBtn').classList.add('on');
+    // 底栏按钮初始态与播放状态同步（2026-11-23）
+    $('#lfPlay').classList.toggle('paused', audio.paused);
+    $('#lfCover').classList.toggle('spinning', !audio.paused);
+    lfParticlesStart();   // 歌词粒子：从当前高亮行发出（系统减弱动效时自动跳过）
     const t = S.queue[S.currentIndex];
     if (t && !lyricLines.length) loadLyric(t, t._fallbackId, t._fallbackSrc);   // 还没加载过就先拉歌词（完成后 renderLyric→renderLyricFull 自动同步）
     renderLyricFull();
   }
   function closeLyricFull() {
     lyricFullOn = false;
+    lfParticlesStop();   // 停止并清空粒子动画（释放 rAF）
     lastLyricFullIdx = -1;
     lyricFullEl.classList.remove('show');
     $('#lyricFullBtn').classList.remove('on');
@@ -3238,6 +3343,92 @@
     highlightLyric();
     if (audio.paused) audio.play().catch(() => {});
   });
+
+  /* ---------- 全屏歌词底栏控制（2026-11-23）---------- */
+  $('#lfPrev').onclick = () => step(-1);
+  $('#lfNext').onclick = () => step(1);
+  $('#lfPlay').onclick = () => togglePlay();
+  audio.addEventListener('play', () => { $('#lfPlay').classList.remove('paused'); if ($('#lfCover').style.display !== 'none') $('#lfCover').classList.add('spinning'); });
+  audio.addEventListener('pause', () => { $('#lfPlay').classList.add('paused'); $('#lfCover').classList.remove('spinning'); });
+
+  /* ---------- 全屏歌词粒子：粒子从当前高亮行发出（2026-11-24 v2 歌词联动，非背景飘浮）---------- */
+  const lfCanvas = document.getElementById('lfParticles');
+  const lfCtx = lfCanvas && lfCanvas.getContext ? lfCanvas.getContext('2d') : null;
+  const lfNoMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  let lfParts = [], lfRaf = null, lfLastTs = 0, lfEmitAcc = 0, lfSrc = null;
+  function lfResize() {
+    if (!lfCanvas) return;
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const w = window.innerWidth, h = window.innerHeight;
+    lfCanvas.width = Math.round(w * dpr); lfCanvas.height = Math.round(h * dpr);
+    if (lfCtx) lfCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  // 当前行变化时由 highlightLyricFull 调用：记录该行在视口中的坐标（粒子唯一来源）
+  function lfSetLine(el) {
+    if (!el) { lfSrc = null; return; }
+    const r = el.getBoundingClientRect();
+    lfSrc = { x: r.left, y: r.top, w: Math.max(r.width, 40), h: Math.max(r.height, 12) };
+  }
+  function lfParticlesStart() {
+    if (!lfCtx || lfNoMotion || lfRaf) return;
+    lfResize();
+    const w = window.innerWidth, h = window.innerHeight;
+    lfParts = []; lfEmitAcc = 0;
+    lfLastTs = performance.now();
+    const step = (ts) => {
+      if (!lyricFullOn) { lfRaf = null; return; }
+      const dt = Math.min(0.05, (ts - lfLastTs) / 1000); lfLastTs = ts;
+      const k = audio.paused ? 0.3 : 1;   // 暂停时粒子减速但不消失
+      lfEmitAcc += dt * 55 * k;           // ~55 粒/秒从当前行发出
+      while (lfEmitAcc >= 1) {
+        lfEmitAcc -= 1;
+        if (lfSrc) lfParts.push({
+          x: lfSrc.x - 8 + Math.random() * (lfSrc.w + 16),
+          y: lfSrc.y + Math.random() * lfSrc.h,
+          vx: (Math.random() - 0.5) * 20,
+          vy: -(14 + Math.random() * 36),
+          r: 0.8 + Math.random() * 1.9,
+          age: 0,
+          life: 1.1 + Math.random() * 1.4,
+          tw: 2 + Math.random() * 5,
+          color: Math.random() < 0.5 ? [255, 94, 138] : (Math.random() < 0.5 ? [255, 255, 255] : [255, 158, 184])
+        });
+      }
+      lfCtx.clearRect(0, 0, w, h);
+      for (let i = lfParts.length - 1; i >= 0; i--) {
+        const p = lfParts[i];
+        p.age += dt * k;
+        if (p.age >= p.life || p.y < -12) { lfParts.splice(i, 1); continue; }
+        p.x += (p.vx + Math.sin(p.age * p.tw) * 9) * dt * k;
+        p.y += p.vy * dt * k;
+        const a = Math.sin(Math.PI * p.age / p.life);         // 淡入→淡出
+        const tw = 0.55 + 0.45 * Math.sin(p.age * p.tw * 2.4); // 闪烁
+        lfCtx.beginPath();
+        lfCtx.arc(p.x, p.y, p.r * 2.4, 0, 6.2832);
+        lfCtx.fillStyle = 'rgba(' + p.color[0] + ',' + p.color[1] + ',' + p.color[2] + ',' + (a * tw * 0.28).toFixed(3) + ')';
+        lfCtx.fill();   // 光晕层
+        lfCtx.beginPath();
+        lfCtx.arc(p.x, p.y, p.r, 0, 6.2832);
+        lfCtx.fillStyle = 'rgba(' + p.color[0] + ',' + p.color[1] + ',' + p.color[2] + ',' + (a * tw).toFixed(3) + ')';
+        lfCtx.fill();   // 核心层
+      }
+      lfRaf = requestAnimationFrame(step);
+    };
+    lfRaf = requestAnimationFrame(step);
+  }
+  function lfParticlesStop() {
+    if (lfRaf) { cancelAnimationFrame(lfRaf); lfRaf = null; }
+    lfParts = []; lfSrc = null;
+    if (lfCtx && lfCanvas.width) lfCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+  }
+  window.addEventListener('resize', () => { if (lyricFullOn) lfResize(); });   // 手机旋转/桌面窗口缩放时重算画布尺寸
+  setInterval(() => {
+    if (!lyricFullOn || !audio.duration) return;
+    const p = Math.min(100, audio.currentTime / audio.duration * 100);
+    $('#lfFill').style.width = p + '%';
+    $('#lfCur').textContent = fmt(audio.currentTime);
+    $('#lfTotal').textContent = fmt(audio.duration);
+  }, 300);
 
   /* ---------- 歌单导入 ---------- */
   const importModal = $('#importModal');
